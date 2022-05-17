@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recycling Contamination Demo</title>
+  <style>
+    .input-file-container {
+      position: relative;
+      width: 225px;
+    }
+    .js .input-file-trigger {
+      display: block;
+      padding: 14px 45px;
+      background: #fff;
+      color: #78909c;
+      font-size: 1em;
+      transition: all .4s;
+      cursor: pointer;
+      border: 3px solid #78909c;
+    }
+    .js .input-file {
+      position: absolute;
+      top: 0; left: 0;
+      width: 225px;
+      opacity: 0;
+      padding: 14px 0;
+      cursor: pointer;
+    }
+    .js .input-file:hover + .input-file-trigger,
+    .js .input-file:focus + .input-file-trigger,
+    .js .input-file-trigger:hover,
+    .js .input-file-trigger:focus {
+      background: #34495E;
+      color: #39D2B4;
+    }
+
+    .file-return {
+      margin: 0;
+    }
+    .file-return:not(:empty) {
+      margin: 1em 0;
+    }
+    .js .file-return {
+      font-style: italic;
+      font-size: .9em;
+      font-weight: bold;
+    }
+    .js .file-return:not(:empty):before {
+      content: "Selected file: ";
+      font-style: normal;
+      font-weight: normal;
+    }
+
+    body {
+      font-family: "Open sans", "Segoe UI", "Segoe WP", Helvetica, Arial, sans-serif;
+      color: #7F8C9A;
+      background: #FCFDFD;
+    }
+
+    h1, h2 {
+      margin-bottom: 5px;
+      font-weight: normal;
+      text-align: center;
+      color:#607d8b;
+    }
+    h2 {
+      margin: 12px 0 2em;
+      color: #e5c494;
+      font-weight: normal;
+    }
+    form {
+      width: 225px;
+      margin: 0 auto;
+      text-align:center;
+    }
+    h2 + P {
+      text-align: center;
+    }
+    .txtcenter {
+      margin-top: 4em;
+      font-size: .9em;
+      text-align: center;
+      color: #aaa;
+    }
+    .copy {
+      margin-top: 2em;
+    }
+    .copy a {
+      text-decoration: none;
+      color: #1ABC9C;
+    }
+
+    .preview {
+      position: relative;
+      margin-left: -32px;
+      top: 0px;
+      width: 300px;
+      height: 300px;
+      background: #fafafa;
+      border: 1px solid #90a4ae;
+    }
+
+    .button-container {
+      position: relative;
+      top: 0px;
+      width: 225px;
+    }
+
+    .js .check-button {
+      position: absolute;
+      top: 0; left: 0;
+      width: 225px;
+      height: 50px;
+      padding: 14px 0;
+      cursor: pointer;
+      background: #fff;
+      border: 3px solid #78909c;
+      font-size: 1em;
+      color: #78909c;
+    }
+
+    .line-1 {
+      position: relative;
+      left: 112px;
+      width: 2px;
+      height: 70px;
+      background: #78909c;
+    }
+
+    .line-2 {
+      position: relative;
+      left: 112px;
+      width: 2px;
+      height: 70px;
+      background: #78909c;
+    }
+
+    .indicator {
+      position: fixed;
+      margin-left: 300px;
+      margin-top: -300px;
+      width: 50px;
+      height: 50px;
+      background: #cfd8dc;
+    }
+
+    .score {
+      position: fixed;
+      margin-left: 293px;
+      margin-top: -240px;
+      width: 350px;
+      height: 150px;
+      color: #eceff1;
+      text-align: left;
+    }
+
+    .n1 {
+      font-size: 8em;
+    }
+
+    .n2 {
+      font-size: 2em;
+    }
+
+    .category {
+      position: fixed;
+      margin-left: 293px;
+      margin-top: -80px;
+      width: 350px;
+      height: 70px;
+      color: #546e7a;
+      text-align: left;
+	background: #FFFFFF;
+	text-transform: uppercase;
+    }
+
+
+  </style>
+</head>
+<body>
+<h1>Avoid Recycling Contamination</h1>
+<h2>Perform Recyclability Litmus Test</h2>
+
+<form action="#">
+  <div class="input-file-container">
+    <input class="input-file" id="my-file" type="file">
+    <label tabindex="0" for="my-file" class="input-file-trigger">Select the Item</label>
+  </div>
+  <p class="file-return"></p>
+  <div class="line-1"></div>
+  <div class="preview"></div>
+  <div class="indicator"></div>
+  <div class="score"><span class="n1">0</span><span class="n2">.00</span></div>
+  <div class="category"></div>
+  <div class="line-2"></div>
+  <div class="button-container">
+    <input type="button" id="contamination-test" class="check-button" value="Check Recyclability">
+  </div>
+
+
+
+
+</form>
+</body>
+<script>
+
+var imageFile = null;
+document.querySelector("html").classList.add('js');
+
+var fileInput  = document.querySelector( ".input-file" ),
+    inputFileTrigger = document.querySelector( ".input-file-trigger" ),
+    the_return = document.querySelector(".file-return"),
+    contaminationTester = document.querySelector(".check-button");
+
+inputFileTrigger.addEventListener( "keydown", function( event ) {
+    if ( event.keyCode == 13 || event.keyCode == 32 ) {
+        fileInput.focus();
+    }
+});
+inputFileTrigger.addEventListener( "click", function( event ) {
+   fileInput.focus();
+   return false;
+});
+
+contaminationTester.addEventListener( "click", function( event ) {
+    const url = "/upload/";
+    const bodyFormData = new FormData();
+    console.log(imageFile)
+    bodyFormData.append("file", imageFile);
+    fetch(url, {
+      body: bodyFormData,
+      method: 'POST'
+    }).then(response => response.json()).then(data => {
+	console.log(data);
+	document.querySelector( ".indicator" ).style.background = data.contamination;
+	document.querySelector( ".category" ).innerHTML = data.label;
+	document.querySelector( ".n1" ).innerHTML = data.integer_part;
+	document.querySelector( ".n2" ).innerHTML = "."+data.fraction_part;
+    }).catch(err => console.log(err));
+});
+
+fileInput.addEventListener( "change", function( event ) {
+    imageFile = this.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+    reader.onload = function (e) {
+        /*var src = URL.createObjectURL(imageFile);
+        var preview = document.getElementById("image-file-preview");
+        preview.src = src;*/
+        // preview.style.display = "block";
+        var fileContent = reader.result
+        document.querySelector( ".preview" ).style.backgroundImage = 'url(' + fileContent + ')';
+        document.querySelector(".preview").style.backgroundSize = "300px 300px";
+	  document.querySelector( ".indicator" ).style.background = "#cfd8dc";
+	  document.querySelector( ".category" ).innerHTML = "";
+	  document.querySelector( ".n1" ).innerHTML = "0";
+	  document.querySelector( ".n2" ).innerHTML = ".00";
+    }
+
+    // the_return.innerHTML = this.value;
+});
+
+
+</script>
+</html>
